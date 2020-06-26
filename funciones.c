@@ -1,4 +1,4 @@
-/**//* 22.333.444-PEREZ_DEL_RIO,JuanManuel-(07-2299) *//**/
+/**//* 38.455.227-PAIVA_GORDILLO,NahuelAlejo-(01-2964) *//**/
 
 
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
@@ -16,22 +16,39 @@
 
 
 
+tNodo* buscar_menor_nodo_lista(tNodo* desde, int (*comparar)(const void*, const void*))
+{
+    tNodo* menor = desde;
+    tNodo* p = desde->sig;
+
+    while(p)
+    {
+        if(comparar(p->info, menor->info) < 0)
+            menor = p;
+
+        p = p->sig; ///LO AVANZO AL SIGUIENTE.
+    }
+
+    return menor;
+}
+
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 /**//* FUNCIONES Y PRIMITIVAS A DESARROLLAR                               *//**/
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 /**//* para la información                                                *//**/
-/**
+
 void mostrarMovim_MIO(const void *d, FILE *fp)
 {
-
+    const tMovi* movim = d;
+    fprintf(fp, "%s%10.2f\n", movim->ctaCte, movim->saldo);
 }
- **/
-/**
+
+
 int compararMovim_MIO(const void *d1, const void *d2)
 {
 
 }
- **/
+
 /**
 int esCtaCte002_MIO(const void *d)
 {
@@ -53,84 +70,52 @@ void mostrarTotal_MIO(const void *d, FILE *fp)
  **/
 
 /**//* para el TDA LISTA                                                  *//**/
-/**
+
 int mostrarLista_MIO(const tLista *p,
                      void (*mostrar)(const void *, FILE *), FILE *fp)
 {
-
+    fprintf(fp,"Nro Cuenta Banc   Importe\n");
+    int k = 0;//cantidad de items mostrados, k items
+    while(*p){
+        mostrar((*p)->info, fp);
+        p = &(*p)->sig;
+        k++;
+    }
+    return k;
 }
- **/
+
 
 void ordenarLista_MIO(tLista *p, int (*comparar)(const void *, const void *))
 {
-    tLista* first=p;//Se guarda la primera posicion de la lista.
-    tLista* aux=p;
+    tLista *first = p;//guardo la posicion de la lista, es el que recorre la lista de manera ordenada
 
     if(!*p)
         return;
 
     while((*p)->sig){
-        tNodo ** men = buscar_menor_nodo_lista(pl, comparar);
 
-        //avanzar un nodo hasta antes del menor.
-        while((*aux)->sig != men){
-            aux=&(*aux)->sig;
+        tNodo * men = buscar_menor_nodo_lista(*p, comparar);//devuelve p en la primer posicion
+
+        if(*p == men){//p es igual al menor, por ende debo avanzarlo.
+            first=&(*first)->sig;
+            p=&(*p)->sig;
         }
-        //puenteo el nodo a reubicar
-        (*aux)->sig = (*men)->sig;
-        //el siguiente del nodo a reubicar va a ser el "first"
-        //condicion en la cual el primer nodo difiere del puntero actual.
-        if(first != p)
-            (*first)->sig = *men;
+        else{//quiere decir que p no es el menor, por ende no debo avanzarlo
+            tLista *aux = p;
+            while((*aux)->sig != men)//Avanzo aux hasta el anterior al menor
+                aux=&(*aux)->sig;
 
-        *first = *men;
-        //hacer funcion que enganche 3 nodos
-
-				*listaOrdenada = menMov;
-        (*men)->sig = *first;
-
-
-        if(p != men)
-        {
-            reinsertar_nodo_menor(pl, men);
+            (*aux)->sig = men->sig;//puenteo el menor
+            men->sig = *p;//engancho el menor al principio
+            if(first == p){//primera vez, quiere decir que no se habia movido
+                *first = men;
+            }
+            else{
+                (*first)->sig = men;
+                first= &(*first)->sig;
+            }
         }
-        pl &(*p)->sig;
     }
-    /**
-    tLista* primero = p;
-	tLista* listaOrdenada = p;
-	tNodo* menMov;
-
-	if(!*p)
-		return;
-
-	while((*primero)->sig){
-		menMov = *primero;
-
-			while(*p){
-
-				if( (*p)->sig &&  comparar( menMov->info, (*p)->sig->info )>0 )
-					menMov = *p;
-
-				p = &(*p)->sig;
-			}
-			if(menMov != *primero){
-				*p = menMov;
-				menMov = menMov -> sig;
-				(*p)->sig = menMov -> sig;
-				menMov->sig = *primero;
-
-				if(listaOrdenada != primero)
-					(*listaOrdenada)->sig = menMov;
-
-				*listaOrdenada = menMov;
-			}
-			else
-				primero = &(*primero)->sig;
-
-			p = &(*primero)->sig;
-    }
-    */
 }
 
 /**
@@ -166,30 +151,5 @@ int  vaciarListaYMostrar_MIO(tLista *p,
 //sucur1, sucur2
 
 
-void reinsertar_nodo_menor(tLista * pl, tLista * men)
-{
-    tNodo * aux = *men;
-    *men = aux->sig;
-    aux->sig = *pl;
-    *pl = aux;
-}
 
-tNodo ** buscar_menor_nodo_lista(const tLista * pl, int (*cmp)(const void*, const void*))
-{
-    const tLista * men = pl;
-    if (!*pl)
-    {
-        return NULL;
-    }
-    pl=&(*pl)->sig;
-    while(*pl)
-    {
-        if(cmp((*pl)->info, (*men)->info)<0)
-        {
-            men = pl;
-        }
-        pl=&(*pl)->sig;
-    }
-    return (tNodo **)men;
-}
 

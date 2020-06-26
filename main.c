@@ -16,8 +16,8 @@ int main()
             "En la lista hay %d movimientos bancarios.\n\n",
             cant);
 
-    cant = mostrarLista(&lista, mostrarMovim, fpPant);
-/** cant = mostrarLista_MIO(&lista, mostrarMovim_MIO, fpPant);               **/
+//    cant = mostrarLista(&lista, mostrarMovim, fpPant);
+    cant = mostrarLista_MIO(&lista, mostrarMovim_MIO, fpPant);
 
     fprintf(fpPant,
             "Se mostraron %d movimientos bancarios de la lista.\n\n",
@@ -27,8 +27,8 @@ int main()
     //ordenarLista(&lista, compararMovim);
     ordenarLista_MIO(&lista, compararMovim);
 
-    if(cant != mostrarLista(&lista, mostrarMovim, fpPant))
-/** if(cant != mostrarLista_MIO(&lista, mostrarMovim_MIO, fpPant))           **/
+//    if(cant != mostrarLista(&lista, mostrarMovim, fpPant))
+    if(cant != mostrarLista_MIO(&lista, mostrarMovim_MIO, fpPant))
         fprintf(fpPant, "Ups!!! - Faltan cuentas.\n");
     else
         fprintf(fpPant,
