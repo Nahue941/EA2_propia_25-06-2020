@@ -25,7 +25,7 @@ int main()
     fprintf(fpPant, "Ordenando por número de cuenta.\n");
 
     //ordenarLista(&lista, compararMovim);
-    ordenarLista_MIO(&lista, compararMovim);
+    ordenarLista_MIO(&lista, compararMovim_MIO);
 
 //    if(cant != mostrarLista(&lista, mostrarMovim, fpPant))
     if(cant != mostrarLista_MIO(&lista, mostrarMovim_MIO, fpPant))

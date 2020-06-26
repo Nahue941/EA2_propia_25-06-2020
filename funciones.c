@@ -13,8 +13,19 @@
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 /**//**//* ACÁ DEBE DESARROLLAR LAS FUNCIONES Y PRIMITIVAS PEDIDAS    *//**//**/
 /**//**//* ADEMÁS DE CUALQUIER OTRA FUNCIÓN QUE SE REQUIERA           *//**//**/
+int strcmp_(const char* s1, const char* s2)
+{
+    while (*s1 && *s1==*s2){
+        s1++;
+        s2++;
+    }
+    return * (char*)s1-* (char*)s2;
+}
 
-
+int esNumero (int x)
+{
+    return x >= '0' && x <= '9';
+}
 
 tNodo* buscar_menor_nodo_lista(tNodo* desde, int (*comparar)(const void*, const void*))
 {
@@ -32,6 +43,24 @@ tNodo* buscar_menor_nodo_lista(tNodo* desde, int (*comparar)(const void*, const 
     return menor;
 }
 
+double leerCadena(const void*d)
+{
+    double num = 0;//utilizo double porque si no al pasar los numeros a "enteros" pierdo el rango de representacion de los numeros menos significativos.
+    const char* cad = (const char*)d;
+
+    while (*cad){
+        if(!esNumero(*cad))
+            cad++;
+        else{
+            num *= 10;
+            num += *cad - '0';
+            cad++;
+        }
+    }
+
+    return num;
+}
+
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 /**//* FUNCIONES Y PRIMITIVAS A DESARROLLAR                               *//**/
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
@@ -46,8 +75,15 @@ void mostrarMovim_MIO(const void *d, FILE *fp)
 
 int compararMovim_MIO(const void *d1, const void *d2)
 {
+    return strcmp_(d1, d2);
 
-}
+    /**
+    double n1, n2;
+    n1 = leerCadena(d1);
+    n2 = leerCadena(d2);
+
+    return n1<n2?-1:0;//realizo esta comparacion para poder devolver un int, si no pasa el rango de representacion.*/
+}//Por mi comparacion no me interesa saber por cuanto fue la diferencia, solo si hubo alguna.
 
 /**
 int esCtaCte002_MIO(const void *d)
@@ -118,7 +154,7 @@ void ordenarLista_MIO(tLista *p, int (*comparar)(const void *, const void *))
     }
 }
 
-/**
+
 int eliminarMostrarYMostrarSubTot_MIO(tLista *p, FILE *fpPant,
                                       int comparar(const void *, const void *),
                                       int comparar2(const void *d),
@@ -127,9 +163,9 @@ int eliminarMostrarYMostrarSubTot_MIO(tLista *p, FILE *fpPant,
                                       void mostrar(const void *, FILE *),
                                       void mostrar2(const void *, FILE *))
 {
-
+    return 0;
 }
- **/
+
 /**
 int  vaciarListaYMostrar_MIO(tLista *p,
                              void (*mostrar)(const void *, FILE *), FILE *fp)
