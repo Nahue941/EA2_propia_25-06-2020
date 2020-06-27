@@ -3,8 +3,7 @@
 
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 /**//**//* CUALQUIER INCLUDE DE BIBLIOTECA QUE NECESITE, HÁGALO ACÁ   *//**//**/
-#define FALSE 0
-#define TRUE 1
+#include <stdlib.h>
 
 
 /**//**//* CUALQUIER INCLUDE DE BIBLIOTECA QUE NECESITE, HÁGALO ACÁ   *//**//**/
@@ -13,6 +12,8 @@
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 /**//**//* ACÁ DEBE DESARROLLAR LAS FUNCIONES Y PRIMITIVAS PEDIDAS    *//**//**/
 /**//**//* ADEMÁS DE CUALQUIER OTRA FUNCIÓN QUE SE REQUIERA           *//**//**/
+
+
 int strcmp_(const char* s1, const char* s2)
 {
     while (*s1 && *s1==*s2){
@@ -20,11 +21,6 @@ int strcmp_(const char* s1, const char* s2)
         s2++;
     }
     return * (char*)s1-* (char*)s2;
-}
-
-int esNumero (int x)
-{
-    return x >= '0' && x <= '9';
 }
 
 tNodo* buscar_menor_nodo_lista(tNodo* desde, int (*comparar)(const void*, const void*))
@@ -43,67 +39,89 @@ tNodo* buscar_menor_nodo_lista(tNodo* desde, int (*comparar)(const void*, const 
     return menor;
 }
 
-double leerCadena(const void*d)
+int buscarSubcadena(const char* cad1, const char* cad2)
 {
-    double num = 0;//utilizo double porque si no al pasar los numeros a "enteros" pierdo el rango de representacion de los numeros menos significativos.
-    const char* cad = (const char*)d;
-
-    while (*cad){
-        if(!esNumero(*cad))
-            cad++;
-        else{
-            num *= 10;
-            num += *cad - '0';
-            cad++;
-        }
+    while(*cad1==*cad2 && *cad1){
+        cad1++;
+        cad2++;
     }
-
-    return num;
+    return *cad2?0:1;
 }
 
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 /**//* FUNCIONES Y PRIMITIVAS A DESARROLLAR                               *//**/
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 /**//* para la información                                                *//**/
+char* strcpy_(char *s1, const char *s2)
+{
+    char *aux=s1;
+    while (*s2){
+        *s1++ = *s2++;
+        }
+    *s1=*s2;
+    return (char*)aux;
+}
+
+size_t strlen_(const char *cad)
+{
+    const char *p = cad;
+
+    while (*cad)
+        ++cad;
+
+    return cad - p;
+}
 
 void mostrarMovim_MIO(const void *d, FILE *fp)
 {
-    const tMovi* movim = d;
-    fprintf(fp, "%s%10.2f\n", movim->ctaCte, movim->saldo);
+    const tMovi* m = d;
+    fprintf(fp,"%s%10.2f\n", m->ctaCte, m->saldo);
 }
 
 
 int compararMovim_MIO(const void *d1, const void *d2)
 {
-    return strcmp_(d1, d2);
+    const char* s1 = d1,* s2 = d2;
+    while (*s1 && *s1==*s2){
+        s1++;
+        s2++;
+    }
+    return *(char*)s1- *(char*)s2;
+}
 
-    /**
-    double n1, n2;
-    n1 = leerCadena(d1);
-    n2 = leerCadena(d2);
 
-    return n1<n2?-1:0;//realizo esta comparacion para poder devolver un int, si no pasa el rango de representacion.*/
-}//Por mi comparacion no me interesa saber por cuanto fue la diferencia, solo si hubo alguna.
 
-/**
 int esCtaCte002_MIO(const void *d)
 {
+    const tMovi* movim = d;
+    const char* cad = movim->ctaCte;
 
+    cad += (strlen_(cad) - 3);
+
+    int ret = buscarSubcadena(cad,"002");
+
+    return ret;
 }
- **/
-/**
+
+
 int acumularMoviSaldo_MIO(void **dest, unsigned *tamDest,
                       const void *ori, unsigned tamOri)
 {
+    tMovi* movDes = *dest;
+    const tMovi* movimOri = ori;
 
+    movDes->saldo += movimOri->saldo;
+
+    return 1;
 }
- **/
-/**
+
+
 void mostrarTotal_MIO(const void *d, FILE *fp)
 {
-
+    const tMovi * m = d;
+    fprintf(fp, " Total cliente:% 10.2f\n\n",m->saldo);
 }
- **/
+
 
 /**//* para el TDA LISTA                                                  *//**/
 
@@ -163,29 +181,54 @@ int eliminarMostrarYMostrarSubTot_MIO(tLista *p, FILE *fpPant,
                                       void mostrar(const void *, FILE *),
                                       void mostrar2(const void *, FILE *))
 {
-    return 0;
+    int cont=0;//cantidad eliminados
+    while (*p){
+        tMovi totalCuenta;
+        tMovi* pM = &totalCuenta;
+        char cadAux[16];
+
+        if (comparar2((*p)->info)){
+
+            fprintf(fpPant,"Nro Cuenta Banc   Importe\n");
+            totalCuenta.saldo=0;
+            strcpy_(cadAux, (*p)->info);
+
+            while (*p && comparar2((*p)->info) && (comparar((*p)->info, cadAux))==0){//Mientras que la cuenta sea 2 y no haya cambiado de cuenta
+
+                acumular((void*)&pM, (unsigned*)sizeof(tMovi), (*p)->info, sizeof(tMovi));
+                mostrar((*p)->info, fpPant);
+
+                tNodo* elim = *p;
+                *p = elim->sig;
+                free(elim->info);
+                free(elim);
+                cont++;
+            }
+            mostrar2(&totalCuenta, fpPant);
+        }
+        else
+            p = &(*p)->sig;
+    }
+    return cont;
 }
 
-/**
+
 int  vaciarListaYMostrar_MIO(tLista *p,
                              void (*mostrar)(const void *, FILE *), FILE *fp)
 {
+    int k = 0;//k cant
+    while(*p){
+        tNodo* aux = *p;
 
+        k++;
+        *p = aux->sig;
+        if(mostrar && fp)
+            mostrar(aux->info, fp);
+
+        free(aux->info);
+    }
+
+    return k;
 }
- **/
+
 /**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
-
-////////////////extras/////////////////////
-//cad*
-//
-//int leerCadena (const char* cad, int* sucur, int* codCli, int* tipoCue, double* saldo)
-//
-//cad, sc
-//leerCadena(Cad, &sucur1, &cli, )
-//
-//cli1==cli2;
-//sucur1, sucur2
-
-
-
-
