@@ -1,19 +1,14 @@
-/**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
-/**//**//* NO DEBE HACER NINGUNA MODIFICACIÓN EN ESTE ARCHIVO         *//**//**/
-/**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
-
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
 
-#include "funciones.h"
+#include "Prisma.h"
 
 
+
+using namespace std;
 
 
 #endif // MAIN_H_
-
-/**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**/
 

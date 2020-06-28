@@ -36,12 +36,12 @@ int main()
             cant);
 
     fprintf(fpPant, "Eliminando y mostrando los movimientos de CtaCte.\n");
-  /**  cantElim = eliminarMostrarYMostrarSubTot(&lista, fpPant,
-                                             compararMovim_MIO,
-                                             esCtaCte002_MIO,
+/**    cantElim = eliminarMostrarYMostrarSubTot(&lista, fpPant,
+                                             compararMovim,
+                                             esCtaCte002,
                                              acumularMoviSaldo,
                                              mostrarMovim,
-                                             mostrarTotal_MIO);*/
+                                             mostrarTotal);*/
     cantElim = eliminarMostrarYMostrarSubTot_MIO(&lista, fpPant,
                                                  compararMovim_MIO,
                                                  esCtaCte002_MIO,
